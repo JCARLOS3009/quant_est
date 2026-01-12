@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Lajes 2026</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; padding: 20px; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        
+        .setup-section { background: #e9ecef; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
+        .setup-section input { width: 80px; padding: 10px; border: 1px solid #ced4da; border-radius: 5px; }
+        
+        .laje-card { background: #fff; border: 1px solid #dee2e6; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; position: relative; }
+        .laje-card::before { content: attr(data-label); font-weight: bold; color: #6f42c1; display: block; grid-column: 1 / -1; }
+        
+        label { font-size: 11px; font-weight: bold; color: #495057; display: block; margin-bottom: 2px; }
+        input { width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
+        
+        .btn-gerar { background: #6f42c1; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-calcular { background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; margin-top: 20px; }
+        
+        .relatorio-dados { background: #f8f9fa; border-left: 5px solid #6f42c1; padding: 15px; margin: 20px 0; border-radius: 5px; }
+        .resumo-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .card-resumo { padding: 15px; border-radius: 10px; text-align: center; color: white; font-weight: bold; }
+        .bg-volume { background: #28a745; }
+        .bg-forma { background: #17a2b8; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th { background-color: #6f42c1; color: white; padding: 12px; font-size: 14px; }
+        td { border: 1px solid #dee2e6; padding: 10px; text-align: center; font-size: 14px; }
+        .btn-exportar { background: #6c757d; color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; margin-top: 15px; width: 100%; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Calculadora de Lajes (Volume e Forma)</h2>
+
+    <div class="setup-section">
+        <strong>Quantas lajes diferentes deseja calcular?</strong>
+        <input type="number" id="qtd_lajes" min="1" value="1">
+        <button class="btn-gerar" onclick="gerarCampos()">Gerar Campos</button>
+    </div>
+
+    <div id="formulario_lajes"></div>
+
+    <button id="btnCalcular" class="btn-calcular" style="display:none;" onclick="calcularTudo()">Calcular Volume e Área de Forma</button>
+
+    <div id="resultadoArea" style="display:none;">
+        
+        <div class="relatorio-dados">
+            <h3>📋 Memorial de Dados (Lajes)</h3>
+            <div id="memorialTexto" style="font-size: 13px; color: #495057;"></div>
+        </div>
+
+        <div class="resumo-cards">
+            <div class="card-resumo bg-volume">
+                <strong>VOLUME TOTAL DE CONCRETO:</strong> <br> <span id="volTotalGeral" style="font-size: 22px;">0.000</span> m³
+            </div>
+            <div class="card-resumo bg-forma">
+                <strong>ÁREA DE FORMA TOTAL:</strong> <br> <span id="areaTotalGeral" style="font-size: 22px;">0.00</span> m²
+            </div>
+        </div>
+
+        <table id="tabelaResultados">
+            <thead>
+                <tr>
+                    <th>Laje</th>
+                    <th>Dimensões (m)</th>
+                    <th>Espessura (m)</th>
+                    <th>Área Forma (m²)</th>
+                    <th>Volume (m³)</th>
+                </tr>
+            </thead>
+            <tbody id="corpoTabela"></tbody>
+        </table>
+        
+        <button class="btn-exportar" onclick="exportarCSV()">Exportar para Excel (CSV)</button>
+    </div>
+</div>
+
+<script>
+    function gerarCampos() {
+        const qtd = parseInt(document.getElementById('qtd_lajes').value);
+        const container = document.getElementById('formulario_lajes');
+        container.innerHTML = ""; 
+
+        if (isNaN(qtd) || qtd < 1) return;
+
+        for (let i = 1; i <= qtd; i++) {
+            const card = document.createElement('div');
+            card.className = 'laje-card';
+            card.setAttribute('data-label', `Dados da Laje ${i}`);
+            
+            card.innerHTML = `
+                <div><label>Comprimento C (m)</label><input type="number" class="comp" step="0.01" value="5.00"></div>
+                <div><label>Largura L (m)</label><input type="number" class="larg" step="0.01" value="4.00"></div>
+                <div><label>Espessura E (m)</label><input type="number" class="esp" step="0.01" value="0.10"></div>
+                <div><label>Repetições (Qtd)</label><input type="number" class="rep" value="1" min="1"></div>
+            `;
+            container.appendChild(card);
+        }
+        document.getElementById('btnCalcular').style.display = 'block';
+    }
+
+    function calcularTudo() {
+        const comprimentos = document.querySelectorAll('.comp');
+        const larguras = document.querySelectorAll('.larg');
+        const espessuras = document.querySelectorAll('.esp');
+        const repeticoes = document.querySelectorAll('.rep');
+        
+        let volTotal = 0;
+        let areaTotalForma = 0;
+        let memorialHTML = "";
+        const corpoTabela = document.getElementById('corpoTabela');
+        corpoTabela.innerHTML = "";
+
+        for (let i = 0; i < comprimentos.length; i++) {
+            const C = parseFloat(comprimentos[i].value);
+            const L = parseFloat(larguras[i].value);
+            const E = parseFloat(espessuras[i].value);
+            const R = parseInt(repeticoes[i].value);
+
+            if ([C, L, E, R].some(isNaN)) continue;
+
+            // Volume: Área * Espessura
+            const area_laje = C * L;
+            const v_unit = area_laje * E;
+            const v_item = v_unit * R;
+            volTotal += v_item;
+
+            // Área de Forma: Fundo (C*L) + Bordas Laterais (Perímetro * Espessura)
+            // Considera-se que a laje precisa de forma no fundo e nas 4 laterais (bordas)
+            const area_fundo = C * L;
+            const area_bordas = (2 * C + 2 * L) * E;
+            const area_forma_unit = area_fundo + area_bordas;
+            const area_forma_item = area_forma_unit * R;
+            areaTotalForma += area_forma_item;
+
+            memorialHTML += `<div><strong>Laje ${i+1}:</strong> ${R} un. de ${C}x${L}m | Espessura: ${E}m</div>`;
+
+            corpoTabela.innerHTML += `
+                <tr>
+                    <td>Laje ${i+1} (${R}x)</td>
+                    <td>${C.toFixed(2)} x ${L.toFixed(2)} m</td>
+                    <td>${E.toFixed(2)} m</td>
+                    <td>${area_forma_item.toFixed(2)}</td>
+                    <td>${v_item.toFixed(3)}</td>
+                </tr>
+            `;
+        }
+
+        document.getElementById('memorialTexto').innerHTML = memorialHTML;
+        document.getElementById('volTotalGeral').innerText = volTotal.toFixed(3);
+        document.getElementById('areaTotalGeral').innerText = areaTotalForma.toFixed(2);
+        document.getElementById('resultadoArea').style.display = 'block';
+        window.scrollTo({ top: document.getElementById('resultadoArea').offsetTop, behavior: 'smooth' });
+    }
+
+    function exportarCSV() {
+        let csv = "Laje;Dimensoes;Espessura;Area Forma (m2);Volume (m3)\n";
+        document.querySelectorAll("#corpoTabela tr").forEach(row => {
+            let rowData = [];
+            row.querySelectorAll("td").forEach(col => rowData.push(col.innerText.replace(".", ",")));
+            csv += rowData.join(";") + "\n";
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "calculo_lajes_2026.csv";
+        link.click();
+    }
+</script>
+
+</body>
+</html>
