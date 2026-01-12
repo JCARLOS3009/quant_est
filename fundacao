@@ -3,139 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Sapatas em Lote - 2026</title>
+    <title>Calculadora de Sapatas 2026 - Completa</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; padding: 20px; color: #333; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { color: #0056b3; text-align: center; }
-        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; background: #f1f3f5; padding: 15px; border-radius: 8px; }
-        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; }
-        input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        button:hover { background-color: #0056b3; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 14px; }
-        th { background-color: #0056b3; color: white; padding: 12px; text-align: left; }
-        td { border: 1px solid #dee2e6; padding: 10px; }
-        tr:nth-child(even) { background-color: #f8f9fa; }
-        .total-row { background-color: #d1ecf1 !important; font-weight: bold; font-size: 16px; }
-        .resumo { margin-top: 20px; padding: 15px; border-left: 5px solid #28a745; background: #e9f7ef; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; padding: 20px; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; margin-bottom: 25px; }
+        .setup-section { background: #dee2e6; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
+        .sapata-input-card { background: #fff; border: 1px solid #ced4da; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+        .sapata-input-card::before { content: attr(data-label); font-weight: bold; color: #007bff; grid-column: 1 / -1; }
+        label { font-size: 11px; font-weight: bold; color: #495057; }
+        input { width: 100%; padding: 8px; border: 1px solid #adb5bd; border-radius: 4px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-blue { background: #007bff; color: white; }
+        .btn-green { background: #28a745; color: white; width: 100%; font-size: 18px; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th { background-color: #343a40; color: white; padding: 12px; font-size: 13px; }
+        td { border: 1px solid #dee2e6; padding: 10px; text-align: center; font-size: 13px; }
+        .total-row { background-color: #e9ecef; font-weight: bold; }
+        .resumo-final { margin-top: 25px; padding: 20px; background: #d4edda; border-radius: 8px; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Cálculo de Sapatas Piramidais em Lote</h2>
-    
-    <div class="grid-inputs">
-        <div>
-            <label>Quantas Sapatas?</label>
-            <input type="number" id="qtd" value="1" min="1">
-        </div>
-        <div>
-            <label>Base A (m)</label>
-            <input type="number" id="L_base" step="0.01" placeholder="Ex: 1.20">
-        </div>
-        <div>
-            <label>Base B (m)</label>
-            <input type="number" id="C_base" step="0.01" placeholder="Ex: 1.20">
-        </div>
-        <div>
-            <label>Topo a (m)</label>
-            <input type="number" id="l_topo" step="0.01" placeholder="Ex: 0.20">
-        </div>
-        <div>
-            <label>Topo b (m)</label>
-            <input type="number" id="c_topo" step="0.01" placeholder="Ex: 0.20">
-        </div>
-        <div>
-            <label>Alt. Rodapé h0 (m)</label>
-            <input type="number" id="h_rodape" step="0.01" placeholder="Ex: 0.20">
-        </div>
-        <div>
-            <label>Alt. Total H (m)</label>
-            <input type="number" id="h_total" step="0.01" placeholder="Ex: 0.50">
-        </div>
+    <h2>Calculadora de Sapatas: Volume e Forma</h2>
+
+    <div class="setup-section">
+        <strong>Quantidade de sapatas:</strong>
+        <input type="number" id="qtd_sapatas" min="1" value="1" style="width: 70px;">
+        <button class="btn btn-blue" onclick="gerarCampos()">Gerar Formulários</button>
     </div>
 
-    <button onclick="gerarTabela()">Calcular e Gerar Tabela</button>
+    <div id="formulario_sapatas"></div>
+
+    <button id="btnCalcular" class="btn btn-green" style="display:none;" onclick="calcularTudo()">Calcular Resultados</button>
 
     <div id="resultadoArea" style="display:none;">
         <table id="tabelaResultados">
             <thead>
                 <tr>
-                    <th>Item</th>
-                    <th>Dimensões (Base)</th>
-                    <th>Dimensões (Topo)</th>
-                    <th>Alturas (h0/H)</th>
-                    <th>Vol. Unitário</th>
+                    <th>Sapata</th>
+                    <th>Base (m)</th>
+                    <th>Topo (m)</th>
+                    <th>Alturas (m)</th>
+                    <th>Área de Forma (m²)</th>
+                    <th>Volume (m³)</th>
                 </tr>
             </thead>
             <tbody id="corpoTabela"></tbody>
         </table>
 
-        <div class="resumo">
-            <strong>RESUMO DO PEDIDO:</strong><br>
-            Volume Total de Concreto: <span id="volTotalFinal" style="color:#d93025; font-size: 20px;">0</span> m³<br>
-            Total em Litros: <span id="litrosTotal">0</span> L<br>
-            Aproximadamente <span id="latasTotal">0</span> latas de 18L.
+        <div id="resumoFinal" class="resumo-final">
+            <strong>RELATÓRIO TOTAL:</strong><br>
+            Área de Forma Total: <span id="areaTotalGeral" style="color:#007bff; font-size: 18px;">0</span> m²<br>
+            Volume de Concreto Total: <span id="volTotalGeral" style="color:#28a745; font-size: 18px;">0</span> m³
         </div>
     </div>
 </div>
 
 <script>
-    function gerarTabela() {
-        const qtd = parseInt(document.getElementById('qtd').value);
-        const A = parseFloat(document.getElementById('L_base').value);
-        const B = parseFloat(document.getElementById('C_base').value);
-        const a = parseFloat(document.getElementById('l_topo').value);
-        const b = parseFloat(document.getElementById('c_topo').value);
-        const h0 = parseFloat(document.getElementById('h_rodape').value);
-        const H = parseFloat(document.getElementById('h_total').value);
+    function gerarCampos() {
+        const qtd = parseInt(document.getElementById('qtd_sapatas').value);
+        const container = document.getElementById('formulario_sapatas');
+        container.innerHTML = "";
 
-        if ([qtd, A, B, a, b, h0, H].some(isNaN) || qtd <= 0) {
-            alert("Por favor, preencha todos os campos com valores válidos.");
-            return;
+        for (let i = 1; i <= qtd; i++) {
+            const card = document.createElement('div');
+            card.className = 'sapata-input-card';
+            card.setAttribute('data-label', `Sapata ${i}`);
+            card.innerHTML = `
+                <div><label>Base A</label><input type="number" class="baseA" step="0.01" value="1.20"></div>
+                <div><label>Base B</label><input type="number" class="baseB" step="0.01" value="1.20"></div>
+                <div><label>Topo a</label><input type="number" class="topoA" step="0.01" value="0.20"></div>
+                <div><label>Topo b</label><input type="number" class="topoB" step="0.01" value="0.20"></div>
+                <div><label>Rodapé h0</label><input type="number" class="h0" step="0.01" value="0.20"></div>
+                <div><label>Total H</label><input type="number" class="H" step="0.01" value="0.60"></div>
+            `;
+            container.appendChild(card);
         }
+        document.getElementById('btnCalcular').style.display = 'block';
+    }
 
-        // Cálculo do Volume Unitário (Tronco de Pirâmide + Prisma)
-        const s1 = A * B; // Área da base
-        const s2 = a * b; // Área do topo
-        const h_piramide = H - h0;
+    function calcularTudo() {
+        const inputs = {
+            A: document.querySelectorAll('.baseA'), B: document.querySelectorAll('.baseB'),
+            a: document.querySelectorAll('.topoA'), b: document.querySelectorAll('.topoB'),
+            h0: document.querySelectorAll('.h0'), H: document.querySelectorAll('.H')
+        };
         
-        const v_unitario = (s1 * h0) + ((h_piramide / 3) * (s1 + s2 + Math.sqrt(s1 * s2)));
-        const v_total_lote = v_unitario * qtd;
-
-        // Limpar e preencher tabela
+        let totalVol = 0, totalArea = 0;
         const corpoTabela = document.getElementById('corpoTabela');
         corpoTabela.innerHTML = "";
 
-        for (let i = 1; i <= qtd; i++) {
-            let row = `<tr>
-                <td>Sapata ${i}</td>
-                <td>${A} x ${B} m</td>
-                <td>${a} x ${b} m</td>
-                <td>${h0} / ${H} m</td>
-                <td>${v_unitario.toFixed(3)} m³</td>
-            </tr>`;
-            corpoTabela.innerHTML += row;
+        for (let i = 0; i < inputs.A.length; i++) {
+            const v = {
+                A: parseFloat(inputs.A[i].value), B: parseFloat(inputs.B[i].value),
+                a: parseFloat(inputs.a[i].value), b: parseFloat(inputs.b[i].value),
+                h0: parseFloat(inputs.h0[i].value), H: parseFloat(inputs.H[i].value)
+            };
+
+            const h_pir = v.H - v.h0;
+            const s1 = v.A * v.B;
+            const s2 = v.a * v.b;
+
+            // Volume
+            const vol = (s1 * v.h0) + ((h_pir / 3) * (s1 + s2 + Math.sqrt(s1 * s2)));
+            
+            // Área de Forma
+            const slantA = Math.sqrt(Math.pow(h_pir, 2) + Math.pow((v.B - v.b) / 2, 2));
+            const slantB = Math.sqrt(Math.pow(h_pir, 2) + Math.pow((v.A - v.a) / 2, 2));
+            const areaBase = 2 * (v.A + v.B) * v.h0;
+            const areaInclinada = ((v.A + v.a) * slantA) + ((v.B + v.b) * slantB);
+            const areaTotalSapata = areaBase + areaInclinada;
+
+            totalVol += vol;
+            totalArea += areaTotalSapata;
+
+            corpoTabela.innerHTML += `
+                <tr>
+                    <td>Sapata ${i+1}</td>
+                    <td>${v.A}x${v.B}</td>
+                    <td>${v.a}x${v.b}</td>
+                    <td>${v.h0}/${v.H}</td>
+                    <td>${areaTotalSapata.toFixed(2)}</td>
+                    <td>${vol.toFixed(3)}</td>
+                </tr>`;
         }
 
-        // Linha de Total na Tabela
-        let totalRow = `<tr class="total-row">
-            <td colspan="4" style="text-align:right">VOLUME TOTAL ACUMULADO:</td>
-            <td>${v_total_lote.toFixed(3)} m³</td>
-        </tr>`;
-        corpoTabela.innerHTML += totalRow;
-
-        // Resumo final
-        document.getElementById('volTotalFinal').innerText = v_total_lote.toFixed(3);
-        document.getElementById('litrosTotal').innerText = (v_total_lote * 1000).toLocaleString('pt-BR');
-        document.getElementById('latasTotal').innerText = Math.ceil((v_total_lote * 1000) / 18);
-        
+        document.getElementById('volTotalGeral').innerText = totalVol.toFixed(3);
+        document.getElementById('areaTotalGeral').innerText = totalArea.toFixed(2);
         document.getElementById('resultadoArea').style.display = 'block';
+        document.getElementById('resumoFinal').style.display = 'block';
     }
 </script>
-
 </body>
 </html>
