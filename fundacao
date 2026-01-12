@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Sapatas 2026</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { color: #333; text-align: center; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        button:hover { background-color: #218838; }
+        .result { margin-top: 20px; padding: 15px; background-color: #e9ecef; border-radius: 4px; display: none; }
+        .result p { margin: 5px 0; color: #333; }
+        .highlight { font-weight: bold; color: #007bff; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Cálculo de Sapata</h2>
+    
+    <div class="input-group">
+        <label for="largura">Largura da Base (A) em metros:</label>
+        <input type="number" id="largura" step="0.01" placeholder="Ex: 1.20">
+    </div>
+
+    <div class="input-group">
+        <label for="comprimento">Comprimento da Base (B) em metros:</label>
+        <input type="number" id="comprimento" step="0.01" placeholder="Ex: 1.50">
+    </div>
+
+    <div class="input-group">
+        <label for="altura">Altura/Espessura (H) em metros:</label>
+        <input type="number" id="altura" step="0.01" placeholder="Ex: 0.40">
+    </div>
+
+    <button onclick="calcular()">Calcular Área e Volume</button>
+
+    <div id="resultado" class="result">
+        <p>Área da Forma (Base): <span id="resArea" class="highlight"></span> m²</p>
+        <p>Volume de Concreto: <span id="resVolume" class="highlight"></span> m³</p>
+        <p>Litros de Concreto: <span id="resLitros" class="highlight"></span> L</p>
+    </div>
+</div>
+
+<script>
+    function calcular() {
+        // Obter valores dos inputs
+        const a = parseFloat(document.getElementById('largura').value);
+        const b = parseFloat(document.getElementById('comprimento').value);
+        const h = parseFloat(document.getElementById('altura').value);
+
+        // Validar se os campos estão preenchidos
+        if (isNaN(a) || isNaN(b) || isNaN(h)) {
+            alert("Por favor, preencha todos os campos com números válidos.");
+            return;
+        }
+
+        // Cálculos
+        const area = a * b;
+        const volume = area * h;
+        const litros = volume * 1000;
+
+        // Exibir resultados formatados
+        document.getElementById('resArea').innerText = area.toFixed(2);
+        document.getElementById('resVolume').innerText = volume.toFixed(3);
+        document.getElementById('resLitros').innerText = litros.toLocaleString('pt-BR');
+        
+        // Mostrar a div de resultado
+        document.getElementById('resultado').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
